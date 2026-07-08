@@ -5,7 +5,7 @@ hochgeladen, automatisch ausgewertet, validiert und über einen Freigabe-Workflo
 geführt. Jeder Schritt erzeugt ein Kafka-Event, das ein Audit-Trail mitschreibt.
 
 **Stack:** React · Spring Boot · Python · Kafka · ZeroMQ · PostgreSQL · MongoDB · MinIO
-**Deployment:** ausschließlich Docker Compose — kein Cloud-Anteil.
+**Deployment:** Docker Compose
 
 ---
 

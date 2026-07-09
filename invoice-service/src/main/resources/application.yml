@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: invoice-service
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:invoiceflow}
+    username: ${POSTGRES_USER:invoiceflow}
+    password: ${POSTGRES_PASSWORD:invoiceflow_dev_pw}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        spring.json.add.type.headers: false
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+storage:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ROOT_USER:invoiceflow}
+  secret-key: ${MINIO_ROOT_PASSWORD:invoiceflow_dev_pw}
+  bucket: ${MINIO_BUCKET:invoices}
+  region: eu-central-1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

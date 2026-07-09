@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+  - package-ecosystem: "maven"
+    directory: "/invoice-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Europe/Vienna"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "java"
+      - "invoice-service"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:30"
+      timezone: "Europe/Vienna"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

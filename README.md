@@ -45,7 +45,7 @@ Erwartetes Bild: die Infra-Dienste stehen auf `Up (healthy)`, die beiden
 
 | Was              | Zugang                                                        |
 |------------------|--------------------------------------------------------------|
-| Kafka-UI         | http://localhost:8080                                        |
+| Kafka-UI         | http://localhost:9090                                        |
 | MinIO Console    | http://localhost:9001 (Login aus `.env`)                     |
 
 ```bash

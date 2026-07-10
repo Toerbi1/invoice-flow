@@ -46,6 +46,11 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Install gateway dependencies
+        working-directory: extraction/gateway
+        run: |
+            pip install -r requirements.txt
+
       - name: Check Python syntax
         run: |
           python -m compileall tools extraction

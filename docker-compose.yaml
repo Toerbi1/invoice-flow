@@ -32,7 +32,7 @@ services:
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      test: ["CMD-SHELL", "mongosh --quiet -u ${MONGO_ROOT_USER} -p ${MONGO_ROOT_PASSWORD} --authenticationDatabase admin --eval \"db.adminCommand('ping').ok\""]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -135,8 +135,68 @@ services:
       MINIO_BUCKET: ${MINIO_BUCKET}
     restart: "no"
 
+  extraction-worker:
+    build:
+      context: ./extraction/worker
+    container_name: invoiceflow-extraction-worker
+    user: appuser
+    restart: unless-stopped
+    environment:
+      WORKER_PULL_ADDRESS: tcp://*:5557
+      WORKER_PUSH_ADDRESS: tcp://*:5558
+    volumes:
+      - extraction-temp:/tmp/invoiceflow
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import zmq; print('ok')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  extraction-gateway:
+    build:
+      context: ./extraction/gateway
+    container_name: invoiceflow-extraction-gateway
+    user: appuser
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      extraction-worker:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_INPUT_TOPIC: invoice.received
+      KAFKA_OUTPUT_TOPIC: invoice.extracted
+      KAFKA_GROUP_ID: extraction-gateway
+
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_SECURE: "false"
+
+      MONGO_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/invoiceflow?authSource=admin
+      MONGO_DATABASE: invoiceflow
+      MONGO_COLLECTION: extractions
+
+      WORKER_PUSH_ADDRESS: tcp://extraction-worker:5557
+      WORKER_PULL_ADDRESS: tcp://extraction-worker:5558
+      SHARED_TMP_DIR: /tmp/invoiceflow
+    volumes:
+      - extraction-temp:/tmp/invoiceflow
+
 volumes:
   postgres-data:
   mongo-data:
   kafka-data:
   minio-data:
+  extraction-temp:

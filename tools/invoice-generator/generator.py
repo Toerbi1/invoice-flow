@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4 # type: ignore
+from reportlab.lib.units import mm # type: ignore
+from reportlab.pdfgen import canvas # type: ignore
 
 from models import InvoiceData
 

@@ -31,3 +31,19 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
+  
+  - package-ecosystem: "pip"
+    directory: "/extraction"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:30"
+      timezone: "Europe/Vienna"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+      - "extraction-service"
+    commit-message:
+      prefix: "deps"
+      include: "scope"

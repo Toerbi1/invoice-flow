@@ -27,6 +27,12 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
+    consumer:
+      group-id: invoice-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
   servlet:
     multipart:
       max-file-size: 20MB

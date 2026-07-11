@@ -2,7 +2,9 @@ package com.invoiceflow.invoice_service.web;
 
 import com.invoiceflow.invoice_service.domain.InvoiceStatus;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record InvoiceResponse(
@@ -11,5 +13,12 @@ public record InvoiceResponse(
         String originalFilename,
         String contentType,
         Long sizeBytes,
-        Instant receivedAt
+        Instant receivedAt,
+        String supplierName,
+        String invoiceNumber,
+        LocalDate invoiceDate,
+        String currency,
+        BigDecimal totalNet,
+        BigDecimal totalGross,
+        String validationError
 ) { }

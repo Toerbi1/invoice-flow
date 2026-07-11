@@ -25,4 +25,10 @@ public class Supplier {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    public Supplier(String name) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.createdAt = Instant.now();
+    }
 }

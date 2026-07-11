@@ -2,7 +2,9 @@
 
 Lokale, event-getriebene Rechnungseingangs-Plattform. Rechnungen (PDF) werden
 hochgeladen, automatisch ausgewertet, validiert und über einen Freigabe-Workflow
-geführt. Jeder Schritt erzeugt ein Kafka-Event, das ein Audit-Trail mitschreibt.
+geführt. Jeder Schritt erzeugt ein Kafka-Event.
+
+**Frontend Demo:** `https://github.com/Toerbi1/invoice-flow-frontend`
 
 **Stack:** React · Spring Boot · Python · Kafka · ZeroMQ · PostgreSQL · MongoDB · MinIO
 **Deployment:** Docker Compose
@@ -12,9 +14,6 @@ geführt. Jeder Schritt erzeugt ein Kafka-Event, das ein Audit-Trail mitschreibt
 ## Voraussetzungen
 
 - Docker + Docker Compose v2
-- Unter Windows: Docker Desktop mit WSL2-Backend. Das Repo im
-  WSL2-Dateisystem (`~/…`) auschecken, **nicht** unter `/mnt/c/…` —
-  das spart Volume-Performance- und Datei-Rechte-Probleme.
 
 ## Infrastruktur
 
@@ -71,8 +70,6 @@ Partitioniert nach `invoiceId` (Message Key) → Events pro Rechnung sind geordn
 - `invoice.received`
 - `invoice.extracted`
 - `invoice.validated`
-- `invoice.approved`
-- `invoice.rejected`
 
 ## Nützliche Befehle
 
@@ -85,14 +82,16 @@ docker compose down -v               # alles stoppen + Daten löschen (Reset)
 
 ## Projektstruktur
 
-invoiceflow/
-├── docker-compose.yml
-├── .env.example
-├── infra/
-│   ├── kafka/create-topics.sh       # Topic-Init (One-Shot)
-│   └── minio/create-bucket.sh       # Bucket-Init (One-Shot)
-├── invoice-service/
-├── extraction/
-├── audit-service/
-├── frontend/
-└── tools/invoice-generator/
+```bash
+invoiceflow/                         # Monorepo-Wurzel
+├── docker-compose.yml               # Orchestriert den lokalen Stack
+├── .env.example                     # Vorlage: Credentials & Ports
+├── infra/                           # Init-Skripte (One-Shot)
+│   ├── kafka/create-topics.sh       # legt die invoice.*-Topics an
+│   └── minio/create-bucket.sh       # legt den Bucket 'invoices' an
+├── invoice-service/                 # Spring Boot: Domäne, REST, Statusmaschine
+├── extraction/                      # Python: Gateway + Worker (Kafka/ZMQ)
+├── audit-service/                   # Python: Audit-Trail der invoice.*-Events
+├── frontend/                        # React + Mantine
+└── tools/invoice-generator/         # ReportLab: Test-PDFs + Ground Truth
+```
